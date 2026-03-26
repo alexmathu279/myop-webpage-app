@@ -36,7 +36,7 @@ export default async function HospitalDetailPage({ params, searchParams }: PageP
 
   // Fetch hospital + active departments
   const hospital = await getHospitalBySlug(slug)
- console.log('departments raw:', hospital)
+
   if (!hospital) notFound()
 
   // Fetch doctors — filtered by department if dept param is present

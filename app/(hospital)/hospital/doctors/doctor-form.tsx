@@ -21,7 +21,6 @@ interface Props {
   doctor?: {
     id:                  string
     full_name:           string
-    specialisation:      string
     qualification:       string
     registration_number: string
     experience_years:    number
@@ -56,10 +55,20 @@ export default function DoctorForm({ action, departments, doctor }: Props) {
               placeholder="Dr. Priya Nair" />
           </div>
           <div className="form-field">
-            <label className="form-field__label">Specialisation <span className="req">*</span></label>
-            <input name="specialisation" type="text" className="form-field__input"
-              defaultValue={doctor?.specialisation} required maxLength={100}
-              placeholder="Cardiology" />
+            <label className="form-field__label">Department <span className="req">*</span></label>
+            {departments.length === 0 ? (
+              <div className="form-field__hint" style={{ color: 'var(--myop-error)' }}>
+                No departments set up. Add departments to your hospital first.
+              </div>
+            ) : (
+              <select name="department_id" className="form-field__input" required
+                defaultValue={doctor?.department_id ?? ''}>
+                <option value="">Select department…</option>
+                {departments.map(d => (
+                  <option key={d.id} value={d.id}>{d.name}</option>
+                ))}
+              </select>
+            )}
           </div>
           <div className="form-field">
             <label className="form-field__label">Qualification <span className="req">*</span></label>
