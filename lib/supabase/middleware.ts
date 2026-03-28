@@ -3,7 +3,6 @@
  * MYOP Healthcare Marketplace
  *
  * All redirects use: new URL(path, request.nextUrl)
- * This keeps protocol correct in all environments (dev + prod).
  */
 
 import { createServerClient } from '@supabase/ssr'
@@ -16,9 +15,9 @@ const PROTECTED_ROUTE_PREFIXES = [
   '/bookings',
   '/profile',
   '/payments',
-  '/hospital/',    // ← trailing slash — must NOT match /hospitals
+  '/hospital/',              // ← trailing slash — must NOT match /hospitals
   '/admin',
-  '/book/confirm', // ← requires auth
+  '/book/confirm',           // ← covers /book/confirm and /book/confirm/diagnostic
 ] as const
 
 const AUTH_ROUTE_PREFIXES = ['/auth'] as const
@@ -43,16 +42,12 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
+        getAll() { return request.cookies.getAll() },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          )
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options),
+            supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
@@ -61,7 +56,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
 
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
-console.log('[middleware] pathname:', pathname, 'user:', !!user)
+
   // ── Unauthenticated → protected route ──
   const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix),
@@ -94,9 +89,7 @@ console.log('[middleware] pathname:', pathname, 'user:', !!user)
       return NextResponse.redirect(new URL('/auth/onboarding', request.nextUrl))
     }
 
-    return NextResponse.redirect(
-      new URL(ROLE_DASHBOARD[role], request.nextUrl)
-    )
+    return NextResponse.redirect(new URL(ROLE_DASHBOARD[role], request.nextUrl))
   }
 
   // ── Onboarding guard ──
@@ -136,9 +129,7 @@ console.log('[middleware] pathname:', pathname, 'user:', !!user)
       .single<{ role: UserRole }>()
 
     if (profile?.role !== 'hospital_staff' && profile?.role !== 'admin') {
-      return NextResponse.redirect(
-        new URL(ROLE_DASHBOARD['patient'], request.nextUrl)
-      )
+      return NextResponse.redirect(new URL(ROLE_DASHBOARD['patient'], request.nextUrl))
     }
   }
 
