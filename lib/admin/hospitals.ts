@@ -191,7 +191,7 @@ export async function registerHospital(
   } = validation.data
 
   // Use anon client — public registration doesn't require auth
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   // Generate a URL-friendly slug from name
   const slug = name

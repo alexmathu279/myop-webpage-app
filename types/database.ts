@@ -123,6 +123,7 @@ export interface DepartmentRow {
   name:        string
   description: string | null
   icon_url:    string | null
+  fee:         number | null   // ← Migration 005: clinic department fee
   is_active:   boolean
   created_at:  string
   updated_at:  string
@@ -524,6 +525,7 @@ export type Database = {
           name:         string
           description?: string | null
           icon_url?:    string | null
+          fee?:         number | null
           is_active?:   boolean
           created_at?:  string
           updated_at?:  string
@@ -535,6 +537,7 @@ export type Database = {
           name?:        string
           description?: string | null
           icon_url?:    string | null
+          fee?:         number | null
           is_active?:   boolean
           updated_at?:  string
           deleted_at?:  string | null

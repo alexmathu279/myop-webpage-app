@@ -16,7 +16,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { z } from 'zod'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { rateLimitAction, securityLogger, validateForm } from '@/lib/security'
 import type { ActionResult } from '@/types/dto'
 
@@ -95,7 +95,7 @@ export async function registerHospital(
     }
   }).filter(s => s.name.length > 0)
 
-  const supabase = await createClient()
+  const supabase = createServiceClient()
 
   const slug = name
     .toLowerCase()

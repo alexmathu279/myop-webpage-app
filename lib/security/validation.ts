@@ -191,11 +191,25 @@ export function validateForm<T extends z.ZodTypeAny>(
   formData: FormData,
 ): ValidationResult<z.infer<T>> {
   const raw: Record<string, unknown> = {}
+
+  // First pass — collect all keys and their values
+  // Repeated keys (e.g. departments[]) become arrays
   for (const [key, value] of formData.entries()) {
     if (key.startsWith('$ACTION') || key === '$ACTION_KEY') continue
-    if (typeof value === 'string') {
-      // Strip Next.js multi-part prefix (e.g. "1_email" → "email")
-      const cleanKey = key.replace(/^\d+_/, '')
+    if (typeof value !== 'string') continue
+
+    // Strip Next.js multi-part prefix (e.g. "1_email" → "email")
+    const cleanKey = key.replace(/^\d+_/, '')
+
+    if (cleanKey in raw) {
+      // Already seen this key — convert to array or push
+      const existing = raw[cleanKey]
+      if (Array.isArray(existing)) {
+        existing.push(value)
+      } else {
+        raw[cleanKey] = [existing, value]
+      }
+    } else {
       raw[cleanKey] = value
     }
   }
@@ -207,5 +221,8 @@ export function validateForm<T extends z.ZodTypeAny>(
     return { success: false, error: firstIssue.message }
   }
 
-  return { success: true, data: sanitizeObject(result.data as Record<string, unknown>) as z.infer<T> }
+  return {
+    success: true,
+    data: sanitizeObject(result.data as Record<string, unknown>) as z.infer<T>,
+  }
 }
