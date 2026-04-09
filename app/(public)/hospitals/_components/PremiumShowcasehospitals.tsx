@@ -1,0 +1,61 @@
+//C:\Users\alexm\OneDrive\Desktop\projects\myop-webpage\app\(public)\hospitals\_components\PremiumShowcasehospitals.tsx
+"use client"
+
+import { useState } from "react"
+
+const ITEMS = [
+  {
+    type: "video",
+    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/premimum%20members/hopital.mp4",
+    title: "Lakeshore Hospital",
+    desc: "Advanced Cardiac Care",
+  },
+  {
+    type: "image",
+    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/hospital/Aster_Medcity_Logo.png",
+    title: "robotic surgery",
+    desc: "Multi-speciality Excellence, robotic surgery and patient-centered care.",
+  },
+]
+
+export default function PremiumShowcase() {
+  const [index, setIndex] = useState(0)
+
+  const next = () => {
+    setIndex((prev) => (prev + 1) % ITEMS.length)
+  }
+
+  const item = ITEMS[index]
+
+  return (
+    <div className="premium-full" onClick={next}>
+      {item.type === "video" ? (
+        <video
+          key={item.src}
+          src={item.src}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="premium-full-media"
+        />
+      ) : (
+        <img src={item.src} className="premium-full-media" />
+      )}
+
+      <div className="premium-full-overlay">
+        <h2>{item.title}</h2>
+        <p>{item.desc}</p>
+      </div>
+
+      <div className="premium-indicator">
+        {ITEMS.map((_, i) => (
+          <span
+            key={i}
+            className={i === index ? "dot active" : "dot"}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
