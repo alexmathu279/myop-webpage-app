@@ -134,7 +134,7 @@ export async function placePharmacyOrder(params: {
         orderId:         order.id,
         paymentMethod:   'online',
         razorpayOrderId: rzpOrder.id,
-        amount:          rzpOrder.amount,
+        amount: Number(rzpOrder.amount),
         keyId:           process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
       },
     }
@@ -201,4 +201,4 @@ export async function getDbCart(): Promise<{ product_id: string; quantity: numbe
     product_id: r.product_id,
     quantity:   r.quantity,
   }))
-}
+} 
