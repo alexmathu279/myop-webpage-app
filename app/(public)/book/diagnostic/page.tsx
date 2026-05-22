@@ -2,11 +2,14 @@
  * app/(public)/book/diagnostic/page.tsx
  * Public — no auth required.
  */
+/**
+ * app/(public)/book/diagnostic/page.tsx
+ */
 
 import type { Metadata } from 'next'
-import { searchDiagnosticCentres } from '@/lib/booking/diagnostic'
+import { cachedSearchDiagnosticCentres } from '@/lib/supabase/cached-queries'
 import DiagnosticClient from './_components/DiagnosticClient'
-import PremiumShowcasediagnostic from "./_components/PremiumShowcasediagnostic"
+import PremiumShowcasediagnostic from './_components/PremiumShowcasediagnostic'
 
 export const metadata: Metadata = {
   title:       'Book Lab Tests & Diagnostics',
@@ -14,7 +17,7 @@ export const metadata: Metadata = {
 }
 
 export default async function DiagnosticPage() {
-  const initialCentres = await searchDiagnosticCentres('')
+  const initialCentres = await cachedSearchDiagnosticCentres('')
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -26,6 +29,7 @@ export default async function DiagnosticPage() {
           Search diagnostic centres by name or test type.
         </p>
       </div>
+
       <PremiumShowcasediagnostic />
       <DiagnosticClient initialCentres={initialCentres} />
     </div>

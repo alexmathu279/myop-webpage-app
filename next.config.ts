@@ -1,57 +1,51 @@
 /**
  * next.config.ts
  * MYOP Healthcare Marketplace
- *
- * SECURITY:
- *   ✓ HTTP security headers via headers()
- *   ✓ No hardcoded secrets — all from environment variables
- *   ✓ Images restricted to known domains
- *   ✓ Powered-By header removed
  */
 
 import type { NextConfig } from 'next'
 import { getNextConfigHeaders } from '@/lib/security/headers'
 
 const nextConfig: NextConfig = {
-  // -------------------------------------------------------------------------
-  // Security headers applied to all routes
-  // -------------------------------------------------------------------------
   async headers() {
-    return getNextConfigHeaders()
+    const securityHeaders = await getNextConfigHeaders()
+
+    const staticAssetHeaders = [
+      {
+        source: '/_next/static/:path*',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/favicon.ico',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      },
+    ]
+
+    return [...securityHeaders, ...staticAssetHeaders]
   },
 
-  // -------------------------------------------------------------------------
-  // Remove X-Powered-By header — don't advertise Next.js version
-  // -------------------------------------------------------------------------
   poweredByHeader: false,
 
-  // -------------------------------------------------------------------------
-  // Restrict image sources to known domains (SSRF prevention)
-  // -------------------------------------------------------------------------
   images: {
     remotePatterns: [
       {
+        // Allow ALL public Supabase storage paths — covers any bucket/folder structure
         protocol: 'https',
-        hostname:  '**.supabase.co',
-        pathname:  '/storage/v1/object/public/**',
+        hostname: '**.supabase.co',
+        pathname: '/**',   // ← was '/storage/v1/object/public/**' which blocked subfolder paths
       },
       {
         protocol: 'https',
-        hostname:  'lh3.googleusercontent.com',  // Google avatars if OAuth added later
+        hostname: 'lh3.googleusercontent.com',
       },
     ],
+    formats:         ['image/avif', 'image/webp'],
+    minimumCacheTTL: 3600,
   },
 
-  // -------------------------------------------------------------------------
-  // Strict mode for React — catches potential issues early
-  // -------------------------------------------------------------------------
   reactStrictMode: true,
 
-  // -------------------------------------------------------------------------
-  // Compiler options
-  // -------------------------------------------------------------------------
   compiler: {
-    // Remove console.log in production (but keep console.error/warn)
     removeConsole: process.env.NODE_ENV === 'production'
       ? { exclude: ['error', 'warn'] }
       : false,

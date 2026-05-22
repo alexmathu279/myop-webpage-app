@@ -4,27 +4,23 @@ import { useState } from "react"
 
 const ITEMS = [
   {
-    type: "video",
-    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/premimum%20members/diagnostic.mp4",
-    title: "DDC",
-    desc: "Blood tests",
+    type:  "video",
+    src:   "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/premimum%20members/diagnostic.mp4",
+    title: "DDC Diagnostics",
+    desc:  "Fast, accurate blood tests with home collection available.",
   },
   {
-    type: "image",
-    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/hospital/Aster_Medcity_Logo.png",
-    title: "ecg, x-ray",
-    desc: "Multi-speciality Excellence, patient-centered care.",
+    type:  "image",
+    src:   "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/hospital/Aster_Medcity_Logo.png",
+    title: "ECG & X-Ray",
+    desc:  "Advanced imaging and cardiac diagnostics, patient-centered care.",
   },
 ]
 
 export default function PremiumShowcasediagnostic() {
   const [index, setIndex] = useState(0)
-
-  const next = () => {
-    setIndex((prev) => (prev + 1) % ITEMS.length)
-  }
-
   const item = ITEMS[index]
+  const next = () => setIndex((prev) => (prev + 1) % ITEMS.length)
 
   return (
     <div className="premium-full" onClick={next}>
@@ -32,14 +28,12 @@ export default function PremiumShowcasediagnostic() {
         <video
           key={item.src}
           src={item.src}
-          autoPlay
-          muted
-          loop
-          playsInline
+          autoPlay muted loop playsInline preload="auto"
           className="premium-full-media"
         />
       ) : (
-        <img src={item.src} className="premium-full-media" />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={item.src} alt={item.title} className="premium-full-media" />
       )}
 
       <div className="premium-full-overlay">
@@ -49,10 +43,7 @@ export default function PremiumShowcasediagnostic() {
 
       <div className="premium-indicator">
         {ITEMS.map((_, i) => (
-          <span
-            key={i}
-            className={i === index ? "dot active" : "dot"}
-          />
+          <span key={i} className={i === index ? "dot active" : "dot"} />
         ))}
       </div>
     </div>

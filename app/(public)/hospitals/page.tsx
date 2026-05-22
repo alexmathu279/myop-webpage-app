@@ -5,11 +5,14 @@
  * Passes them to HospitalsClient which handles search inline
  * (debounced fetch to /api/hospitals/search, no navigation).
  */
+/**
+ * app/(public)/hospitals/page.tsx
+ */
 
 import type { Metadata } from 'next'
-import { searchHospitals } from '@/lib/booking/hospital'
+import { cachedSearchHospitals } from '@/lib/supabase/cached-queries'
 import HospitalsClient from './_components/HospitalsClient'
-import PremiumShowcase from "./_components/PremiumShowcasehospitals"
+import PremiumShowcase from './_components/PremiumShowcasehospitals'
 
 export const metadata: Metadata = {
   title:       'Find Doctors & Hospitals',
@@ -17,8 +20,7 @@ export const metadata: Metadata = {
 }
 
 export default async function HospitalsPage() {
-  // Initial load — all hospitals, no query
-  const initialHospitals = await searchHospitals('')
+  const initialHospitals = await cachedSearchHospitals('')
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -30,7 +32,7 @@ export default async function HospitalsPage() {
           Search by hospital name, doctor name, speciality, or department.
         </p>
       </div>
-      
+
       <PremiumShowcase />
       <HospitalsClient initialHospitals={initialHospitals} />
     </div>

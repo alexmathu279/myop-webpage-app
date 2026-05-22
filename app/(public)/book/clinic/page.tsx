@@ -1,18 +1,22 @@
 /**
  * app/(public)/book/clinic/page.tsx
  */
+/**
+ * app/(public)/book/clinic/page.tsx
+ */
 
 import type { Metadata } from 'next'
-import { searchClinics } from '@/lib/booking/clinic'
+import { cachedSearchClinics } from '@/lib/supabase/cached-queries'
 import ClinicClient from './_components/ClinicClient'
-import PremiumShowcaseclinic from "./_components/PremiumShowcasesclinic"
+import PremiumShowcaseclinic from './_components/PremiumShowcasesclinic'
+
 export const metadata: Metadata = {
   title:       'Find Clinics',
   description: 'Find specialist clinics near you and book appointments.',
 }
 
 export default async function ClinicPage() {
-  const initialClinics = await searchClinics('')
+  const initialClinics = await cachedSearchClinics('')
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -24,6 +28,7 @@ export default async function ClinicPage() {
           Search by clinic name, speciality, or doctor name.
         </p>
       </div>
+
       <PremiumShowcaseclinic />
       <ClinicClient initialClinics={initialClinics} />
     </div>

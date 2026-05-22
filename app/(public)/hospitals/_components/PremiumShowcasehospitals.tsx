@@ -1,31 +1,26 @@
-//C:\Users\alexm\OneDrive\Desktop\projects\myop-webpage\app\(public)\hospitals\_components\PremiumShowcasehospitals.tsx
 "use client"
 
 import { useState } from "react"
 
 const ITEMS = [
   {
-    type: "video",
-    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/premimum%20members/hopital.mp4",
+    type:  "video",
+    src:   "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/premimum%20members/hopital.mp4",
     title: "Lakeshore Hospital",
-    desc: "Advanced Cardiac Care",
+    desc:  "Advanced Cardiac Care",
   },
   {
-    type: "image",
-    src: "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/hospital/Aster_Medcity_Logo.png",
-    title: "robotic surgery",
-    desc: "Multi-speciality Excellence, robotic surgery and patient-centered care.",
+    type:  "image",
+    src:   "https://rzdfmunxomufjftwirxq.supabase.co/storage/v1/object/public/hospital-media/hospital/Aster_Medcity_Logo.png",
+    title: "Robotic Surgery",
+    desc:  "Multi-speciality Excellence, robotic surgery and patient-centered care.",
   },
 ]
 
 export default function PremiumShowcase() {
   const [index, setIndex] = useState(0)
-
-  const next = () => {
-    setIndex((prev) => (prev + 1) % ITEMS.length)
-  }
-
   const item = ITEMS[index]
+  const next = () => setIndex((prev) => (prev + 1) % ITEMS.length)
 
   return (
     <div className="premium-full" onClick={next}>
@@ -33,14 +28,12 @@ export default function PremiumShowcase() {
         <video
           key={item.src}
           src={item.src}
-          autoPlay
-          muted
-          loop
-          playsInline
+          autoPlay muted loop playsInline preload="auto"
           className="premium-full-media"
         />
       ) : (
-        <img src={item.src} className="premium-full-media" />
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={item.src} alt={item.title} className="premium-full-media" />
       )}
 
       <div className="premium-full-overlay">
@@ -50,10 +43,7 @@ export default function PremiumShowcase() {
 
       <div className="premium-indicator">
         {ITEMS.map((_, i) => (
-          <span
-            key={i}
-            className={i === index ? "dot active" : "dot"}
-          />
+          <span key={i} className={i === index ? "dot active" : "dot"} />
         ))}
       </div>
     </div>
